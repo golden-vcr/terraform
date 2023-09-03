@@ -19,6 +19,79 @@ on windows_amd64
 
 ## One-time setup
 
+### DigitalOcean authentication
+
+We use DigitalOcean to run the majority of our app's backend infrastructure. To
+configure access to DigitalOcean:
+
+1. Log in to [cloud.digitalocean.com](https://cloud.digitalocean.com/) and create an
+   account.
+2. Under [API &rarr; Tokens](https://cloud.digitalocean.com/account/api/tokens),
+   generate a new token named `terraform` with full read/write access
+3. Copy the resulting token value
+4. Create a file in the root of this repo called `secret.auto.tfvars`, and paste in the
+   token for the value of `digitalocean_token`
+
+Your `secret.auto.tfvars` file should look like this:
+
+```terraform
+digitalocean_token = "dop_v1_123fed...cba789"
+```
+
+If successful, you should be able to run `terraform plan` without being prompted to
+enter a value for `var.digitalocean_token`, and without encountering any 401 errors
+that say `Unable to authenticate you`.
+
+### DigitalOcean SSH key
+
+terraform expects a public key to be present on your machine at
+`~/.ssh/digitalocean-golden-vcr.pub`: it will add this key to your DigitalOcean
+account, then add it to any droplets that it creates. This will allow you to use the
+accompanying private key (`~/.ssh/digitalocean-golden-vcr`) to connect to any droplet
+that's been provisioned via terraform.
+
+To create a key:
+
+1. Run `ssh-keygen`, and create a new RSA key at `~/.ssh/digitalocean-golden-vcr`
+
+If successful, you should now be able to run `terraform plan` without encountering an
+`Invalid value for "path" parameter: no file exists at "~/.ssh/digitalocean-golden-vcr.pub"`
+error.
+
+### Cloudflare Authentication
+
+We use Cloudflare as a domain registrar, and we use the `cloudflare` terraform provider
+to manage DNS records associated with our domain (`goldenvcr.com`). To configure
+terraform with a Cloudflare API key:
+
+1. Log in to [dash.cloudflare.com](https://dash.cloudflare.com/) as
+   `goldenvcr@gmail.com` and ensure that your email address is verified and your
+   account has a payment method on file.
+2. Under **Domain Registration** &rarr; **Register Domains**, ensure that
+   `goldenvcr.com` is registered under your account.
+3. Under [Profile &rarr; API Tokens](https://dash.cloudflare.com/profile/api-tokens),
+   create a token named `terraform` using the **Edit zone DNS** template and selecting
+   `goldenvcr.com` as the specific zone to include under **Zone Resources**.
+4. Copy the new token value.
+5. Add a new line to `secret.auto.tfvars`, setting the value of `cloudflare_token` to
+   the string you just copied.
+6. In the right sidebar of thethe domain's **Overview** page, find the **Zone ID**
+   value and copy it.
+7. Add a new line to `secret.auto.tfvars`, setting the value of `cloudflare_zone_id` to
+   this value.
+
+At this point, your `secret.auto.tfvars` file should look something like this:
+
+```terraform
+digitalocean_token = "dop_v1_123fed...cba789"
+cloudflare_token = "vf5Zq...WbC"
+cloudflare_zone_id = "abc1...9fff"
+```
+
+If successful, you should be able to run `terraform plan` and `terraform apply` without
+being prompted to enter Cloudflare vars and without encountering any Cloudflare-related
+errors.
+
 ### Google Cloud authentication
 
 We use Google Cloud in order to manage access to the Sheets API. In order to use the
@@ -66,45 +139,6 @@ quota project:
 If successful, you should be able to run `terraform plan` without getting
 `403: Your application is authenticating by using local Application Default Credentials`
 errors.
-
-### DigitalOcean authentication
-
-We use DigitalOcean to run the majority of our app's backend infrastructure. To
-configure access to DigitalOcean:
-
-1. Log in to [cloud.digitalocean.com](https://cloud.digitalocean.com/) and create an
-   account.
-2. Under [API &rarr; Tokens](https://cloud.digitalocean.com/account/api/tokens),
-   generate a new token named `terraform` with full read/write access
-3. Copy the resulting token value
-4. Create a file in the root of this repo called `secret.auto.tfvars`, and paste in the
-   token for the value of `digitalocean_token`
-
-Your `secret.auto.tfvars` file should look like this:
-
-```terraform
-digitalocean_token = "dop_v1_123fed...cba789"
-```
-
-If successful, you should be able to run `terraform plan` without being prompted to
-enter a value for `var.digitalocean_token`, and without encountering any 401 errors
-that say `Unable to authenticate you`.
-
-### DigitalOcean SSH key
-
-terraform expects a public key to be present on your machine at
-`~/.ssh/digitalocean-golden-vcr.pub`: it will add this key to your DigitalOcean
-account, then add it to any droplets that it creates. This will allow you to use the
-accompanying private key (`~/.ssh/digitalocean-golden-vcr`) to connect to any droplet
-that's been provisioned via terraform.
-
-To create a key:
-
-1. Run `ssh-keygen`, and create a new RSA key at `~/.ssh/digitalocean-golden-vcr`
-
-If successful, you should now be able to run `terraform plan` without encountering an
-`Invalid value for "path" parameter: no file exists at "~/.ssh/digitalocean-golden-vcr.pub"`
-error.
 
 ## Running terraform
 
@@ -165,3 +199,12 @@ Or, as a one-liner in bash:
 
 Accept the fingerprint of the host key if prompted, and you should be dropped into a
 shell on the droplet. If that works, then you've configured terraform correctly.
+
+### Verifying Cloudflare
+
+Once Cloudflare has been configured and DNS records have propagated, you should be able
+to resolve the IP address of the API droplet by running `nslookup goldenvcr.com`.
+
+Additionally, you should be able to SSH into the API droplet by simply running:
+
+- `ssh -i ~/.ssh/digitalocean-golden-vcr root@goldenvcr.com`
