@@ -19,29 +19,92 @@ on windows_amd64
 
 ## One-time setup
 
-First, you'll want to ensure that you have an SSH key for use with DigitalOcean. This
-isn't required to apply terraform configuration: instead, it's added to droplets that
-are created via terraform, so that you can SSH into them from your local machine.
+### Google Cloud authentication
 
-To create a key, run `ssh-keygen` and create a new RSA key at
-`~/.ssh/digitalocean-golden-vcr`. The terraform configuration in
-`digitalocean.account.tf` will pick up on this file and add it to your DigitalOcean
-account automatically.
+We use Google Cloud in order to manage access to the Sheets API. In order to use the
+`google` provider in terraform, you'll need to be authenticated with Google Cloud:
 
-Next, you'll want to ensure that you're logged into a DigitalOcean account, and then
-you'll need to configure a DigitalOcean API token:
+1. Log in to [console.cloud.google.com](https://console.cloud.google.com/) as
+   `goldenvcr@gmail.com`, and create a new project called `golden-vcr-api`
+2. Install the [Google Cloud CLI](https://cloud.google.com/sdk/docs/install) on your
+   local machine. When the installation is finished, you should be prompted to run
+   `gcloud init` to initialize the CLI.
+3. When prompted to log in, select `goldenvcr@gmail.com` and authorize CLI access.
 
-1. Visit https://cloud.digitalocean.com/account/api/tokens
-2. Generate a new token named `terraform` with full read/write access
-3. Copy the token value
+If successful, you should now be able to access the details for the `golden-vcr-api`
+project:
+
+```
+> gcloud projects describe golden-vcr-api
+createTime: '2023-09-03T15:53:14.909Z'
+lifecycleState: ACTIVE
+name: Golden VCR API
+projectId: golden-vcr-api
+projectNumber: '547983157914'
+```
+
+Next, you'll need to enable access via the **Google Auth Library** in order for the
+`google` terraform provider to be able to access your account using the authentication
+details you just configured:
+
+4. Run `gcloud auth application-default login`, then select the same account and grant
+   access.
+
+If successful, you should be able to run `terraform plan` (after completing the
+remaining setup steps detailed below) without encountering a
+`google: could not find default credentials` error.
+
+This allows basic programmatic access to your Google Cloud account via terraform.
+However, terraform will still be unable to provision certain kinds of `google`
+resources which require a quota project to be set. This can be resolved by setting a
+quota project:
+
+5. Run `gcloud auth application-default set-quota-project golden-vcr-api`
+6. If prompted to enable the `cloudresourcemanager.googleapis.com` service for the
+   project, agree and continue
+
+If successful, you should be able to run `terraform plan` without getting
+`403: Your application is authenticating by using local Application Default Credentials`
+errors.
+
+### DigitalOcean authentication
+
+We use DigitalOcean to run the majority of our app's backend infrastructure. To
+configure access to DigitalOcean:
+
+1. Log in to [cloud.digitalocean.com](https://cloud.digitalocean.com/) and create an
+   account.
+2. Under [API &rarr; Tokens](https://cloud.digitalocean.com/account/api/tokens),
+   generate a new token named `terraform` with full read/write access
+3. Copy the resulting token value
 4. Create a file in the root of this repo called `secret.auto.tfvars`, and paste in the
    token for the value of `digitalocean_token`
 
 Your `secret.auto.tfvars` file should look like this:
 
 ```terraform
-digitalocean_token = "dop_v1_123fed..."
+digitalocean_token = "dop_v1_123fed...cba789"
 ```
+
+If successful, you should be able to run `terraform plan` without being prompted to
+enter a value for `var.digitalocean_token`, and without encountering any 401 errors
+that say `Unable to authenticate you`.
+
+### DigitalOcean SSH key
+
+terraform expects a public key to be present on your machine at
+`~/.ssh/digitalocean-golden-vcr.pub`: it will add this key to your DigitalOcean
+account, then add it to any droplets that it creates. This will allow you to use the
+accompanying private key (`~/.ssh/digitalocean-golden-vcr`) to connect to any droplet
+that's been provisioned via terraform.
+
+To create a key:
+
+1. Run `ssh-keygen`, and create a new RSA key at `~/.ssh/digitalocean-golden-vcr`
+
+If successful, you should now be able to run `terraform plan` without encountering an
+`Invalid value for "path" parameter: no file exists at "~/.ssh/digitalocean-golden-vcr.pub"`
+error.
 
 ## Running terraform
 
@@ -66,6 +129,25 @@ have been provisioned via terraform, you can destroy all resources with:
 - `terraform destroy`
 
 ## Testing
+
+### Verifying access to Google Sheets API
+
+The [**Golden VCR Inventory** spreadsheet](https://docs.google.com/spreadsheets/d/1cR9Lbw9_VGQcEn8eGD2b5MwGRGzKugKZ9PVFkrqmA7k/edit#gid=0)
+has an ID of `1cR9Lbw9_VGQcEn8eGD2b5MwGRGzKugKZ9PVFkrqmA7k`. Once you've run
+`terraform apply`, the `golden-vcr` project should include a simple API key that
+permits access to the Google Sheets API.
+
+You can get the value of this API key by running `terraform output sheets_api_key`, and
+you can supply this key in HTTP requests to verify that the Sheets API is working.
+
+For example, to get the details of the inventory spreadsheet, you can run (in bash):
+
+- `curl -H "X-goog-api-key: $(terraform output -raw sheets_api_key)" https://sheets.googleapis.com/v4/spreadsheets/1cR9Lbw9_VGQcEn8eGD2b5MwGRGzKugKZ9PVFkrqmA7k`
+
+If you get a valid JSON response with no errors, then Google Sheets API access is
+working as configured.
+
+### Verifying SSH access to DigitalOcean droplet
 
 Once you've run `terraform apply` for the first time, you should have a new
 DigitalOcean droplet called `api`, running in a project called `golden-vcr`, configured
