@@ -1,0 +1,12 @@
+# Exclude secret.tfvars from version control; it contains sensitive values that the
+# developer must define locally
+secret.auto.tfvars
+
+# Exclude the terraform state directory; it's transient, and exclude .tfstate files as
+# well: they're also transient and may contain sensitive data
+.terraform/
+terraform.tfstate*
+
+# Exclude any binary terraform plan files created with the arbitrary default filename
+# 'plan'
+/plan
