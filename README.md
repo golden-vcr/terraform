@@ -216,4 +216,5 @@ Once all resources are applied, you can run `./init-server.sh` to deploy the
 application.
 
 If successful, you should be able to visit https://goldenvcr.com and load a page, with
-a trusted TLS certificate from Cloudflare.
+a trusted TLS certificate from Cloudflare. You should also be able to make requests
+against the API, e.g. `curl https://goldenvcr.com/api/tapes`.
