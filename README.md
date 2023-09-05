@@ -71,11 +71,12 @@ terraform with a Cloudflare API key:
    `goldenvcr.com` is registered under your account.
 3. Under [Profile &rarr; API Tokens](https://dash.cloudflare.com/profile/api-tokens),
    create a token named `terraform` using the **Edit zone DNS** template, then:
-    - Selecting `goldenvcr.com` as the specific zone to include under **Zone Resources**
-    - Under **Permissions**, add a new entry and select **Zone**, **Zone Settings**,
-      **Edit**.
-    - Under **Permissions**, add a new entry and select **Zone**,
-      **SSL and Certificates**, **Edit**.
+    - Select `goldenvcr.com` as the specific zone to include under **Zone Resources**
+    - Under **Permissions**, add the following items, all with **Edit** privileges:
+        - **Zone**: **DNS** _(already included from template)_
+        - **Zone**: **Zone Settings**
+        - **Zone**: **SSL and Certificates**
+        - **Zone**: **Dynamic Redirect**
 4. Copy the new token value.
 5. Add a new line to `secret.auto.tfvars`, setting the value of `cloudflare_token` to
    the string you just copied.

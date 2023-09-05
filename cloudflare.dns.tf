@@ -9,13 +9,13 @@ resource "cloudflare_record" "root_a" {
   proxied = true
 }
 
-# Create an identical A record for the www subdomain: we'll handle path rewrites etc.
-# in our nginx server
+# Create a CNAME record for the www subdomain: Cloudflare will handle redirects on our
+# behalf via cloudflare_ruleset.redirects
 resource "cloudflare_record" "www_a" {
   zone_id = var.cloudflare_zone_id
   name    = "www.${var.domain}."
-  value   = digitalocean_droplet.api.ipv4_address
-  type    = "A"
+  value   = "${var.domain}."
+  type    = "CNAME"
   ttl     = 1
   proxied = true
 }
