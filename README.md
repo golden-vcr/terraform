@@ -192,14 +192,14 @@ DigitalOcean droplet called `api`, running in a project called `golden-vcr`, con
 to allow remote access via your `digitalcean-golden-vcr` SSH key.
 
 Once this droplet is running, you can get its public IP address by running
-`terraform output api_ip_address`. You can then connect to the droplet over SSH as
+`terraform output server_ip_address`. You can then connect to the droplet over SSH as
 `root`, e.g.:
 
 - `ssh -i ~/.ssh/digitalocean-golden-vcr root@165.227.112.138`
 
 Or, as a one-liner in bash:
 
-- `ssh -i ~/.ssh/digitalocean-golden-vcr "root@$(terraform output -raw api_ip_address)"`
+- `ssh -i ~/.ssh/digitalocean-golden-vcr "root@$(terraform output -raw server_ip_address)"`
 
 Accept the fingerprint of the host key if prompted, and you should be dropped into a
 shell on the droplet. If that works, then you've configured terraform correctly.
@@ -208,10 +208,6 @@ shell on the droplet. If that works, then you've configured terraform correctly.
 
 Once Cloudflare has been configured and DNS records have propagated, you should be able
 to resolve the IP address of the API droplet by running `nslookup goldenvcr.com`.
-
-Additionally, you should be able to SSH into the API droplet by simply running:
-
-- `ssh -i ~/.ssh/digitalocean-golden-vcr root@goldenvcr.com`
 
 ## Initializing the server
 
