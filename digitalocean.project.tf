@@ -5,5 +5,6 @@ resource "digitalocean_project" "golden_vcr" {
   environment = "Production"
   resources   = [
     digitalocean_droplet.api.urn,
+    digitalocean_spaces_bucket.frontend.urn,
   ]
 }

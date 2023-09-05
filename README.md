@@ -30,12 +30,17 @@ configure access to DigitalOcean:
    generate a new token named `terraform` with full read/write access
 3. Copy the resulting token value
 4. Create a file in the root of this repo called `secret.auto.tfvars`, and paste in the
-   token for the value of `digitalocean_token`
+   token for the value of `digitalocean_token`.
+5. Under the **Spaces Keys** section of the same tokens page, generate a new key. Paste
+   the key ID (the first value) into the same file as `digitalocean_spaces_key_id`, and
+   paste the secret (the second value) as `digitalocean_spaces_secret`.
 
 Your `secret.auto.tfvars` file should look like this:
 
 ```terraform
 digitalocean_token = "dop_v1_123fed...cba789"
+digitalocean_spaces_key_id = "AB00..99ZZ"
+digitalocean_spaces_secret = "XY/z...b+ABC"
 ```
 
 If successful, you should be able to run `terraform plan` without being prompted to
@@ -89,6 +94,8 @@ At this point, your `secret.auto.tfvars` file should look something like this:
 
 ```terraform
 digitalocean_token = "dop_v1_123fed...cba789"
+digitalocean_spaces_key_id = "AB00..99ZZ"
+digitalocean_spaces_secret = "XY/z...b+ABC"
 cloudflare_token = "vf5Zq...WbC"
 cloudflare_zone_id = "abc1...9fff"
 ```
