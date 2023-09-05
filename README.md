@@ -70,8 +70,12 @@ terraform with a Cloudflare API key:
 2. Under **Domain Registration** &rarr; **Register Domains**, ensure that
    `goldenvcr.com` is registered under your account.
 3. Under [Profile &rarr; API Tokens](https://dash.cloudflare.com/profile/api-tokens),
-   create a token named `terraform` using the **Edit zone DNS** template and selecting
-   `goldenvcr.com` as the specific zone to include under **Zone Resources**.
+   create a token named `terraform` using the **Edit zone DNS** template, then:
+    - Selecting `goldenvcr.com` as the specific zone to include under **Zone Resources**
+    - Under **Permissions**, add a new entry and select **Zone**, **Zone Settings**,
+      **Edit**.
+    - Under **Permissions**, add a new entry and select **Zone**,
+      **SSL and Certificates**, **Edit**.
 4. Copy the new token value.
 5. Add a new line to `secret.auto.tfvars`, setting the value of `cloudflare_token` to
    the string you just copied.
@@ -208,3 +212,11 @@ to resolve the IP address of the API droplet by running `nslookup goldenvcr.com`
 Additionally, you should be able to SSH into the API droplet by simply running:
 
 - `ssh -i ~/.ssh/digitalocean-golden-vcr root@goldenvcr.com`
+
+## Initializing the server
+
+Once all resources are applied, you can run `./init-server.sh` to deploy the
+application.
+
+If successful, you should be able to visit https://goldenvcr.com and load a page, with
+a trusted TLS certificate from Cloudflare.

@@ -10,3 +10,6 @@ terraform.tfstate*
 # Exclude any binary terraform plan files created with the arbitrary default filename
 # 'plan'
 /plan
+
+# Exclude server-init/ssl; these are temp files containing sensitive terraform output
+/server-init/ssl

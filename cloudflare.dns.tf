@@ -5,13 +5,17 @@ resource "cloudflare_record" "root_a" {
   name    = "${var.domain}."
   value   = digitalocean_droplet.api.ipv4_address
   type    = "A"
-  ttl     = 3600
+  ttl     = 1
+  proxied = true
 }
 
+# Create an identical A record for the www subdomain: we'll handle path rewrites etc.
+# in our nginx server
 resource "cloudflare_record" "www_a" {
   zone_id = var.cloudflare_zone_id
   name    = "www.${var.domain}."
   value   = digitalocean_droplet.api.ipv4_address
   type    = "A"
-  ttl     = 3600
+  ttl     = 1
+  proxied = true
 }
