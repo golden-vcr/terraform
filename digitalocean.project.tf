@@ -6,5 +6,6 @@ resource "digitalocean_project" "golden_vcr" {
   resources   = [
     digitalocean_droplet.api.urn,
     digitalocean_spaces_bucket.frontend.urn,
+    digitalocean_spaces_bucket.images.urn,
   ]
 }
