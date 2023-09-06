@@ -11,5 +11,7 @@ terraform.tfstate*
 # 'plan'
 /plan
 
-# Exclude server-init/ssl; these are temp files containing sensitive terraform output
+# Exclude server-init/ssl and env; these are temp files containing sensitive terraform
+# outputs
 /server-init/ssl
+/server-init/env

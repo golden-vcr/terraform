@@ -19,6 +19,10 @@ if [ ! -d ./server-init/ssl ]; then
     terraform output -raw goldenvcr_ssl_certificate_key > ./server-init/ssl/goldenvcr.com.key
 fi
 
+mkdir -p ./server-init/env
+terraform output -raw sheets_api_env > ./server-init/env/tapes.env
+terraform output -raw images_s3_env >> ./server-init/env/tapes.env
+
 echo "[SSH] Terminating tapes API..."
 ssh -i $SSH_KEY "$SSH_DEST" "sh -c '[ -f /gvcr/manage-tapes.sh ] && /gvcr/manage-tapes.sh down'"
 
@@ -36,7 +40,7 @@ scp -i $SSH_KEY ./server-init/goldenvcr.conf "$SSH_DEST:/etc/nginx/conf.d/golden
 echo "[SSH] Reloading NGINX config..."
 ssh -i $SSH_KEY "$SSH_DEST" "nginx -s reload"
 
-echo "[SSH] Installing, configuring, and starting tapes API..."
+echo "[SSH+SCP] Installing, configuring, and starting tapes API..."
 ssh -i $SSH_KEY "$SSH_DEST" "sh -c '\
     cd /gvcr \
     && chmod +x ./manage-tapes.sh \
@@ -44,3 +48,5 @@ ssh -i $SSH_KEY "$SSH_DEST" "sh -c '\
     && mkdir -p ./tapes/bin \
     && echo \"SHEETS_API_KEY=$(terraform output -raw sheets_api_key)\nSPREADSHEET_ID=1cR9Lbw9_VGQcEn8eGD2b5MwGRGzKugKZ9PVFkrqmA7k\" > ./tapes/bin/.env\
     && ./manage-tapes.sh up'"
+scp -i $SSH_KEY ./server-init/env/tapes.env "$SSH_DEST:/gvcr/tapes/bin/.env"
+ssh -i $SSH_KEY "$SSH_DEST" "sh -c 'cd /gvcr && ./manage-tapes.sh up'"
