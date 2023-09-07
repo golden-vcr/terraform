@@ -23,11 +23,11 @@ mkdir -p ./server-init/env
 terraform output -raw sheets_api_env > ./server-init/env/tapes.env
 terraform output -raw images_s3_env >> ./server-init/env/tapes.env
 
-echo "[SSH] Terminating tapes API..."
-ssh -i $SSH_KEY "$SSH_DEST" "sh -c '[ -f /gvcr/manage-tapes.sh ] && /gvcr/manage-tapes.sh down'"
-
 echo "[SSH] Installing NGINX..."
 ssh -i $SSH_KEY "$SSH_DEST" "sh -c 'apt-get update && apt-get install -y nginx'"
+
+echo "[SSH] Terminating tapes API..."
+ssh -i $SSH_KEY "$SSH_DEST" "sh -c '[ -f /gvcr/manage-tapes.sh ] && /gvcr/manage-tapes.sh down'"
 
 echo "[SSH] Initializing gvcr root dir..."
 ssh -i $SSH_KEY "$SSH_DEST" "sh -c 'rm -rf /gvcr && mkdir -p /gvcr'"
@@ -45,8 +45,6 @@ ssh -i $SSH_KEY "$SSH_DEST" "sh -c '\
     cd /gvcr \
     && chmod +x ./manage-tapes.sh \
     && ./manage-tapes.sh install \
-    && mkdir -p ./tapes/bin \
-    && echo \"SHEETS_API_KEY=$(terraform output -raw sheets_api_key)\nSPREADSHEET_ID=1cR9Lbw9_VGQcEn8eGD2b5MwGRGzKugKZ9PVFkrqmA7k\" > ./tapes/bin/.env\
-    && ./manage-tapes.sh up'"
+    && mkdir -p ./tapes/bin'"
 scp -i $SSH_KEY ./server-init/env/tapes.env "$SSH_DEST:/gvcr/tapes/bin/.env"
 ssh -i $SSH_KEY "$SSH_DEST" "sh -c 'cd /gvcr && ./manage-tapes.sh up'"
