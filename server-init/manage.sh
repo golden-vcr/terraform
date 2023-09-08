@@ -1,17 +1,16 @@
 #!/usr/bin/env bash
 set -e
 
-REPO_NAME="tapes"
-
+REPO_NAME="$1"
 COMMAND=""
-case "$1" in
+case "$2" in
 install) COMMAND="install" ;;
 up) COMMAND="up" ;;
 down) COMMAND="down" ;;
 esac
 
-if [ "$COMMAND" == "" ]; then
-    echo "ERROR: Must provide a valid command (install|up|down)"
+if [ "$REPO_NAME" == "" ] || [ "$COMMAND" == "" ]; then
+    echo: "Usage: ./manage.sh [repo] [install|up|down]"
     exit 1
 fi
 
@@ -28,7 +27,7 @@ if [ "$COMMAND" == "up" ]; then
     go build -o "bin/$REPO_NAME" "cmd/server/main.go"
     cd bin
     mkdir -p /var/log/gvcr
-    "./$REPO_NAME" >> "/var/log/gvcr/$REPO_NAME.log" 2>&1 &
+    "./$REPO_NAME" > "/var/log/gvcr/$REPO_NAME.log" 2>&1 &
     PID=$!
     echo "PID $PID"
 fi

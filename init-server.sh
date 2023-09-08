@@ -31,29 +31,41 @@ fi
 mkdir -p ./server-init/env
 terraform output -raw sheets_api_env > ./server-init/env/tapes.env
 terraform output -raw images_s3_env >> ./server-init/env/tapes.env
+terraform output -raw twitch_api_env >> ./server-init/env/showtime.env
 
 echo "[SSH] Installing NGINX..."
 ssh -i $SSH_KEY "$SSH_DEST" "sh -c 'apt-get update && apt-get install -y nginx'"
 
-echo "[SSH] Terminating tapes API..."
-ssh -i $SSH_KEY "$SSH_DEST" "sh -c '[ -f /gvcr/manage-tapes.sh ] && /gvcr/manage-tapes.sh down'"
+echo "[SSH] Terminating existing API processes..."
+ssh -i $SSH_KEY "$SSH_DEST" "sh -c '[ ! -f /gvcr/manage.sh ] || /gvcr/manage.sh tapes down'"
+ssh -i $SSH_KEY "$SSH_DEST" "sh -c '[ ! -f /gvcr/manage.sh ] || /gvcr/manage.sh showtime down'"
 
 echo "[SSH] Initializing gvcr root dir..."
 ssh -i $SSH_KEY "$SSH_DEST" "sh -c 'rm -rf /gvcr && mkdir -p /gvcr'"
 
 echo "[SCP] Copying SSL certificate files, NGINX config, and management scripts..."
 scp -i $SSH_KEY -r ./server-init/ssl "$SSH_DEST:/gvcr/ssl"
-scp -i $SSH_KEY ./server-init/manage-tapes.sh "$SSH_DEST:/gvcr/manage-tapes.sh"
+scp -i $SSH_KEY ./server-init/manage.sh "$SSH_DEST:/gvcr/manage.sh"
+ssh -i $SSH_KEY "$SSH_DEST" "chmod +x /gvcr/manage.sh"
 scp -i $SSH_KEY ./server-init/goldenvcr.conf "$SSH_DEST:/etc/nginx/conf.d/goldenvcr.conf"
 
 echo "[SSH] Reloading NGINX config..."
 ssh -i $SSH_KEY "$SSH_DEST" "nginx -s reload"
 
-echo "[SSH+SCP] Installing, configuring, and starting tapes API..."
+echo "[SSH+SCP] Installing and configuring tapes API..."
 ssh -i $SSH_KEY "$SSH_DEST" "sh -c '\
     cd /gvcr \
-    && chmod +x ./manage-tapes.sh \
-    && ./manage-tapes.sh install \
+    && ./manage.sh tapes install \
     && mkdir -p ./tapes/bin'"
 scp -i $SSH_KEY ./server-init/env/tapes.env "$SSH_DEST:/gvcr/tapes/bin/.env"
-ssh -i $SSH_KEY "$SSH_DEST" "sh -c 'cd /gvcr && ./manage-tapes.sh up'"
+
+echo "[SSH+SCP] Installing and configuring showtime API..."
+ssh -i $SSH_KEY "$SSH_DEST" "sh -c '\
+    cd /gvcr \
+    && ./manage.sh showtime install \
+    && mkdir -p ./showtime/bin'"
+scp -i $SSH_KEY ./server-init/env/showtime.env "$SSH_DEST:/gvcr/showtime/bin/.env"
+
+echo "[SSH] Starting new API processes..."
+ssh -i $SSH_KEY "$SSH_DEST" "sh -c 'cd /gvcr && ./manage.sh tapes up'"
+ssh -i $SSH_KEY "$SSH_DEST" "sh -c 'cd /gvcr && ./manage.sh showtime up'"
