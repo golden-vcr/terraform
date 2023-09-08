@@ -8,6 +8,15 @@ SSH_USER="root"
 SSH_ADDRESS=$(terraform output -raw server_ip_address)
 SSH_DEST="$SSH_USER@$SSH_ADDRESS"
 
+if [ "$1" == "nginx" ]; then
+    echo "[SCP] Copying updated NGINX config..."
+    scp -i $SSH_KEY ./server-init/goldenvcr.conf "$SSH_DEST:/etc/nginx/conf.d/goldenvcr.conf"
+    echo "[SSH] Reloading NGINX config..."
+    ssh -i $SSH_KEY "$SSH_DEST" "nginx -s reload"
+    echo "NGINX config synced."
+    exit 0
+fi
+
 if [ "$1" == "-f" ] || [ "$1" == "--force" ]; then
     rm -rf ./server-init/ssl
 fi
