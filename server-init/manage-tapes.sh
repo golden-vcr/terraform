@@ -25,7 +25,7 @@ fi
 
 if [ "$COMMAND" == "up" ]; then
     cd $REPO_NAME
-    go build -o "bin/$REPO_NAME" "cmd/main.go"
+    go build -o "bin/$REPO_NAME" "cmd/server/main.go"
     cd bin
     mkdir -p /var/log/gvcr
     "./$REPO_NAME" >> "/var/log/gvcr/$REPO_NAME.log" 2>&1 &
