@@ -14,7 +14,15 @@ You should then be able to run:
 ```
 > terraform -version
 Terraform v1.5.6
-on windows_amd64
+on linux_amd64
+```
+
+Some scripts require [jq](https://jqlang.github.io/jq/): install it, and then you
+should be able to run:
+
+```
+jq --version
+jq-1.5-1-a5b5cbe
 ```
 
 ## One-time setup
@@ -151,6 +159,20 @@ quota project:
 If successful, you should be able to run `terraform plan` without getting
 `403: Your application is authenticating by using local Application Default Credentials`
 errors.
+
+### Twitch API setup
+
+1. Log into the Twitch Developer console and navigate to
+   [Applications](https://dev.twitch.tv/console/apps).
+2. Click **Register Your Application**, and enter the following details:
+    - **Name:** Golden VCR
+    - **OAuth Redirect URLs:** http://localhost
+    - **Category:** Website Integration
+3. Click **Create**, then click **Manage** next to the new **Golden VCR** entry.
+4. Copy the **Client ID** value and add it to `secret.auto.tfvars` as
+   `twitch_app_client_id`.
+5. Click **New Secret**, then copy the value and add it to `secret.auto.tfvars` as
+   `twitch_app_client_secret`.
 
 ## Running terraform
 
