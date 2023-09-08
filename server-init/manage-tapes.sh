@@ -34,9 +34,16 @@ if [ "$COMMAND" == "up" ]; then
 fi
 
 if [ "$COMMAND" == "down" ]; then
+    set +e
     PIDS=$(pgrep -x "$REPO_NAME")
-    for PID in $PIDS; do
-        echo "Killing $REPO_NAME ($PID)..."
-        kill "$PID"
-    done
+    PGREP_EXITCODE=$?
+    set -e
+    if [ $PGREP_EXITCODE -eq 0 ]; then
+        for PID in $PIDS; do
+            echo "Killing $REPO_NAME ($PID)..."
+            kill "$PID"
+        done
+    else
+        echo "$REPO_NAME is not running."
+    fi
 fi
