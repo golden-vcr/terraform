@@ -31,7 +31,7 @@ fi
 mkdir -p ./server-init/env
 terraform output -raw sheets_api_env > ./server-init/env/tapes.env
 terraform output -raw images_s3_env >> ./server-init/env/tapes.env
-terraform output -raw twitch_api_env >> ./server-init/env/showtime.env
+terraform output -raw twitch_api_env > ./server-init/env/showtime.env
 
 echo "[SSH] Installing NGINX..."
 ssh -i $SSH_KEY "$SSH_DEST" "sh -c 'apt-get update && apt-get install -y nginx'"
