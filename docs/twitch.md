@@ -3,7 +3,7 @@
 We use the Twitch API in the [showtime](https://github.com/golden-vcr/showtime) API,
 allowing our backend to receive event notifications from Twitch.
 
-### Twitch API setup
+## Twitch API setup
 
 There's no Terraform provider for Twitch, but we still store Twitch-related secrets in
 Terraform. To set up your Twitch developer credentials initially:
@@ -20,8 +20,22 @@ Terraform. To set up your Twitch developer credentials initially:
 5. Click **New Secret**, then copy the value and add it to `secret.auto.tfvars` as
    `twitch_app_client_secret`.
 
+We also need to manually manage a Twitch Extension. To create it initially:
+
+1. Browse to the [Extensions](https://dev.twitch.tv/console/extensions) page in the
+   Developer console.
+2. Click **Create Extension**, and enter `Golden VCR Interactive Overlay` as the
+   extension name.
+3. On the next page, copy the **Twitch API Client ID** value and add it to
+   `secret.auto.tfvars` as `twitch_extension_client_id`.
+4. Choose the **Video (Full screen)** extension type, scroll down to the bottom of the
+   page, and click **Create Extension Version**.
+
 Note that creating event subscriptions via the EventSub API is outside the purview of
 the terraform repo. Once the backend is deployed and your Twitch credentials are
 configured, you'll need to do some additional first-time setup to register webhooks
 with Twitch. For more information on that process, see the README in the
 [showtime](https://github.com/golden-vcr/showtime) repo.
+
+For more information on building and deploying extensions, see the
+[extensions](https://github.com/golden-vcr/extensions) repo.

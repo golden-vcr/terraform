@@ -10,12 +10,15 @@ variable twitch_channel_name {
 
 variable twitch_app_client_id {
   description = "Client ID value for Twitch Application, obtained from https://dev.twitch.tv/console/apps; should be set in secret.auto.tfvars"
-  sensitive   = true
 }
 
 variable twitch_app_client_secret {
   description = "Client Secret value for Twitch Application, obtained from https://dev.twitch.tv/console/apps; should be set in secret.auto.tfvars"
   sensitive   = true
+}
+
+variable twitch_extension_client_id {
+  description = "Client ID vlaue for Twitch Extension, obtained from https://dev.twitch.tv/console/extensions; should be set in secret.auto.tfvars"
 }
 
 resource "random_id" "twitch_webhook_secret" {
