@@ -7,6 +7,7 @@ resource "digitalocean_project" "golden_vcr" {
     digitalocean_droplet.api.urn,
     digitalocean_volume.db.urn,
     digitalocean_spaces_bucket.frontend.urn,
+    digitalocean_spaces_bucket.graphics.urn,
     digitalocean_spaces_bucket.images.urn,
   ]
 }
