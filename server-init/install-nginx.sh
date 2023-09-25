@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-systemctl status nginx
+systemctl --no-pager status nginx
 if [ $? -eq 0 ]; then
     echo "NGINX is already installed."
     exit
