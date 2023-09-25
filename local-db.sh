@@ -4,7 +4,7 @@ set -e
 POSTGRES_IMAGE='postgres:16'
 CONTAINER_NAME='gvcr-postgres'
 USERNAME='gvcr'
-PASSWORD='pass$!wor@\/d'
+PASSWORD='password'
 PORT='5432'
 
 if [ "$1" == "env" ]; then
@@ -35,7 +35,6 @@ if [ "$1" == "up" ]; then
         -e "POSTGRES_USER=$USERNAME" \
         -e "POSTGRES_PASSWORD=$PASSWORD" \
         -p "$PORT:5432" \
-        -v "$(pwd)/local-db-init.sql:/docker-entrypoint-initdb.d/local-db-init.sql:ro" \
         "$POSTGRES_IMAGE"
     exit
 fi
