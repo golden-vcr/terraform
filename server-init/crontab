@@ -1,0 +1,2 @@
+# Every 30 minutes, sync tape data from Sheets/S3 to the database
+0,30 * * * * cd /gvcr/tapes/bin && ./tapes-sync > /var/log/gvcr/tapes-sync.log

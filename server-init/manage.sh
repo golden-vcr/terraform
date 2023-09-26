@@ -35,6 +35,10 @@ run_up() {
         ./db-migrate.sh
     fi
 
+    if [ -f cmd/sync/main.go ]; then
+        echo "Building $REPO_NAME-sync binary..."
+        go build -o "bin/$REPO_NAME-sync" "cmd/sync/main.go"
+    fi
     if [ -f cmd/admin/main.go ]; then
         echo "Building $REPO_NAME-admin binary..."
         go build -o "bin/$REPO_NAME-admin" "cmd/admin/main.go"
