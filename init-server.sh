@@ -3,6 +3,10 @@ set -e
 SSH_KEY="~/.ssh/digitalocean-golden-vcr"
 echo "Updating Golden VCR server..."
 
+terraform_output() {
+    terraform output -raw "$1" | tr -d '\015'
+}
+
 echo -e "\n== Resolving server IP address..."
 SSH_USER="root"
 SSH_ADDRESS=$(terraform output -raw server_ip_address)
@@ -12,19 +16,17 @@ echo "SSH destination: $SSH_DEST"
 if [ ! -d ./server-init/ssl ]; then
     echo -e "\n== Writing SSL certificate files locally..."
     mkdir -p ./server-init/ssl
-    terraform output -raw goldenvcr_ssl_certificate > ./server-init/ssl/goldenvcr.com.crt
-    terraform output -raw goldenvcr_ssl_certificate_key > ./server-init/ssl/goldenvcr.com.key
+    terraform_output goldenvcr_ssl_certificate > ./server-init/ssl/goldenvcr.com.crt
+    terraform_output goldenvcr_ssl_certificate_key > ./server-init/ssl/goldenvcr.com.key
 fi
 
 echo -e "\n== Preparing .env files with config details from Terraform state..."
 mkdir -p ./server-init/env
-terraform output -raw postgres_init_script > ./server-init/env/init-postgres.sh.tmp
-tr -d '\015' < ./server-init/env/init-postgres.sh.tmp > ./server-init/env/init-postgres.sh
-rm ./server-init/env/init-postgres.sh.tmp
-terraform output -raw sheets_api_env > ./server-init/env/tapes.env
-terraform output -raw images_s3_env >> ./server-init/env/tapes.env
-terraform output -raw twitch_api_env > ./server-init/env/showtime.env
-terraform output -raw showtime_db_env >> ./server-init/env/showtime.env
+terraform_output postgres_init_script > ./server-init/env/init-postgres.sh
+terraform_output sheets_api_env > ./server-init/env/tapes.env
+terraform_output images_s3_env >> ./server-init/env/tapes.env
+terraform_output twitch_api_env > ./server-init/env/showtime.env
+terraform_output showtime_db_env >> ./server-init/env/showtime.env
 echo "Wrote to: ./server-init/env"
 
 echo -e "\n== Copying management scripts and SSL certificates to /gvcr..."
