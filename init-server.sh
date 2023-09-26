@@ -24,6 +24,7 @@ mkdir -p ./server-init/env
 terraform_output postgres_init_script > ./server-init/env/init-postgres.sh
 terraform_output sheets_api_env > ./server-init/env/tapes.env
 terraform_output images_s3_env >> ./server-init/env/tapes.env
+terraform_output tapes_db_env >> ./server-init/env/tapes.env
 terraform_output twitch_api_env > ./server-init/env/showtime.env
 terraform_output showtime_db_env >> ./server-init/env/showtime.env
 echo "Wrote to: ./server-init/env"
