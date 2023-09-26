@@ -59,7 +59,7 @@ scp -i $SSH_KEY ./server-init/env/showtime.env "$SSH_DEST:/gvcr/showtime.env"
 ssh -i $SSH_KEY "$SSH_DEST" "sh -c 'cd /gvcr && ./manage.sh showtime update /gvcr/showtime.env'"
 
 echo -e "\n== Preparing crontab file to configure scheduled jobs..."
-scp -i $SSH_KEY ./server-init/crontab "$SSH_DEST:/gvcr/crontab"
-ssh -i $SSH_KEY "$SSH_DEST" "sh -c 'cd /gvcr && crontab ./crontab'"
+scp -i $SSH_KEY ./server-init/crontab "$SSH_DEST:/gvcr/crontab.tmp"
+ssh -i $SSH_KEY "$SSH_DEST" "sh -c 'cd /gvcr && tr -d '\''\r'\'' <crontab.tmp >crontab && rm crontab.tmp && crontab ./crontab'"
 
 echo -e "\nGolden VCR server updated."
