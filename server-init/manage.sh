@@ -25,11 +25,23 @@ run_install() {
 
 run_up() {
     cd $REPO_NAME
+    if [ "$ENV_FILE_PATH" != "" ]; then
+        mkdir -p bin
+        mv "$ENV_FILE_PATH" bin/.env
+    fi
+
+    if [ -f db-migrate.sh ]; then
+        echo "Running database migrations for $REPO_NAME..."
+        ./db-migrate.sh
+    fi
+
+    if [ -f cmd/admin/main.go ]; then
+        echo "Building $REPO_NAME-admin binary..."
+        go build -o "bin/$REPO_NAME-admin" "cmd/admin/main.go"
+    fi
+
     go build -o "bin/$REPO_NAME" "cmd/server/main.go"
     cd bin
-    if [ "$ENV_FILE_PATH" != "" ]; then
-        mv "$ENV_FILE_PATH" ./.env
-    fi
     mkdir -p /var/log/gvcr
     "./$REPO_NAME" > "/var/log/gvcr/$REPO_NAME.log" 2>&1 &
     PID=$!
