@@ -13,12 +13,11 @@ SSH_ADDRESS=$(terraform output -raw server_ip_address)
 SSH_DEST="$SSH_USER@$SSH_ADDRESS"
 echo "SSH destination: $SSH_DEST"
 
-if [ ! -d ./server-init/ssl ]; then
-    echo -e "\n== Writing SSL certificate files locally..."
-    mkdir -p ./server-init/ssl
-    terraform_output goldenvcr_ssl_certificate > ./server-init/ssl/goldenvcr.com.crt
-    terraform_output goldenvcr_ssl_certificate_key > ./server-init/ssl/goldenvcr.com.key
-fi
+echo -e "\n== Writing SSL certificate files locally..."
+mkdir -p ./server-init/ssl
+terraform_output goldenvcr_ssl_certificate > ./server-init/ssl/goldenvcr.com.crt
+terraform_output goldenvcr_ssl_certificate_key > ./server-init/ssl/goldenvcr.com.key
+echo "Wrote to: ./server-init/ssl"
 
 echo -e "\n== Preparing .env files with config details from Terraform state..."
 mkdir -p ./server-init/env
@@ -30,8 +29,8 @@ terraform_output showtime_db_env >> ./server-init/env/showtime.env
 echo "Wrote to: ./server-init/env"
 
 echo -e "\n== Copying management scripts and SSL certificates to /gvcr..."
-ssh -i $SSH_KEY "$SSH_DEST" "mkdir -p /gvcr"
-scp -i $SSH_KEY -r ./server-init/ssl "$SSH_DEST:/gvcr/ssl"
+ssh -i $SSH_KEY "$SSH_DEST" "mkdir -p /gvcr/ssl"
+scp -i $SSH_KEY ./server-init/ssl/* "$SSH_DEST:/gvcr/ssl"
 scp -i $SSH_KEY ./server-init/install-postgres.sh "$SSH_DEST:/gvcr/install-postgres.sh"
 scp -i $SSH_KEY ./server-init/env/init-postgres.sh "$SSH_DEST:/gvcr/init-postgres.sh"
 scp -i $SSH_KEY ./server-init/install-nginx.sh "$SSH_DEST:/gvcr/install-nginx.sh"
