@@ -6,9 +6,9 @@ resource "digitalocean_droplet" "api" {
   ssh_keys = [digitalocean_ssh_key.default.id]
 }
 
-resource "digitalocean_volume_attachment" "db_on_api" {
+resource "digitalocean_volume_attachment" "data_on_api" {
   droplet_id = digitalocean_droplet.api.id
-  volume_id  = digitalocean_volume.db.id
+  volume_id  = digitalocean_volume.data.id
 }
 
 output "server_ip_address" {
