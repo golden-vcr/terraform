@@ -21,7 +21,7 @@ echo "Wrote to: ./server-init/ssl"
 
 echo -e "\n== Preparing .env files with config details from Terraform state..."
 mkdir -p ./server-init/env
-terraform_output postgres_init_script > ./server-init/env/init-postgres.sh
+terraform_output postgres_init_script > ./server-init/env/db-init.sh
 terraform_output sheets_api_env > ./server-init/env/tapes.env
 terraform_output images_s3_env >> ./server-init/env/tapes.env
 terraform_output tapes_db_env >> ./server-init/env/tapes.env
@@ -35,7 +35,8 @@ scp -i $SSH_KEY ./server-init/ssl/* "$SSH_DEST:/gvcr/ssl"
 scp -i $SSH_KEY ./server-init/mount-volume.sh "$SSH_DEST:/gvcr/mount-volume.sh"
 scp -i $SSH_KEY ./server-init/install-go.sh "$SSH_DEST:/gvcr/install-go.sh"
 scp -i $SSH_KEY ./server-init/install-postgres.sh "$SSH_DEST:/gvcr/install-postgres.sh"
-scp -i $SSH_KEY ./server-init/env/init-postgres.sh "$SSH_DEST:/gvcr/init-postgres.sh"
+scp -i $SSH_KEY ./server-init/env/db-init.sh "$SSH_DEST:/gvcr/db-init.sh"
+scp -i $SSH_KEY ./server-init/db-dump.sh "$SSH_DEST:/gvcr/db-dump.sh"
 scp -i $SSH_KEY ./server-init/install-nginx.sh "$SSH_DEST:/gvcr/install-nginx.sh"
 scp -i $SSH_KEY ./server-init/manage.sh "$SSH_DEST:/gvcr/manage.sh"
 ssh -i $SSH_KEY "$SSH_DEST" "sh -c 'chmod +x /gvcr/*.sh'"
@@ -48,8 +49,7 @@ ssh -i $SSH_KEY "$SSH_DEST" "sh -c 'cd /gvcr && ./install-go.sh'"
 
 echo -e "\n== Ensuring that PostgreSQL is installed..."
 ssh -i $SSH_KEY "$SSH_DEST" "sh -c 'cd /gvcr && ./install-postgres.sh'"
-ssh -i $SSH_KEY "$SSH_DEST" "sh -c 'cd /gvcr && ./init-postgres.sh'"
-ssh -i $SSH_KEY "$SSH_DEST" "sh -c 'rm /gvcr/init-postgres.sh'"
+ssh -i $SSH_KEY "$SSH_DEST" "sh -c 'cd /gvcr && ./db-init.sh'"
 
 echo -e "\n== Ensuring that NGINX is installed..."
 ssh -i $SSH_KEY "$SSH_DEST" "sh -c 'cd /gvcr && ./install-nginx.sh'"
