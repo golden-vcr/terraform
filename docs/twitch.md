@@ -12,7 +12,10 @@ Terraform. To set up your Twitch developer credentials initially:
    [Applications](https://dev.twitch.tv/console/apps).
 2. Click **Register Your Application**, and enter the following details:
     - **Name:** Golden VCR
-    - **OAuth Redirect URLs:** http://localhost:3033/auth
+    - **OAuth Redirect URLs:**
+      - `https://goldenvcr.com/auth`
+      - `http://localhost:5173/auth`
+      - `http://localhost:3033/auth`
     - **Category:** Website Integration
 3. Click **Create**, then click **Manage** next to the new **Golden VCR** entry.
 4. Copy the **Client ID** value and add it to `secret.auto.tfvars` as
