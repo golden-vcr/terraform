@@ -1,3 +1,10 @@
+resource "random_password" "postgres_auth_password" {
+  keepers = {
+    version  = 1
+  }
+  length = 32
+}
+
 resource "random_password" "postgres_tapes_password" {
   keepers = {
     version  = 1
@@ -10,6 +17,17 @@ resource "random_password" "postgres_showtime_password" {
     version  = 1
   }
   length = 32
+}
+
+output "auth_db_env" {
+  value     = <<EOT
+PGHOST=127.0.0.1
+PGPORT=5432
+PGDATABASE=auth
+PGUSER=auth
+PGPASSWORD='${random_password.postgres_auth_password.result}'
+EOT
+  sensitive = true
 }
 
 output "tapes_db_env" {
@@ -61,6 +79,7 @@ init_db() {
   fi
 }
 
+init_db 'auth' '${random_password.postgres_auth_password.result}'
 init_db 'tapes' '${random_password.postgres_tapes_password.result}'
 init_db 'showtime' '${random_password.postgres_showtime_password.result}'
 echo "Database initialized."
