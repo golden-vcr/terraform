@@ -22,7 +22,7 @@ clean_dumps() {
 }
 
 # Stop and start applications that connect to the database while restoring backups
-APPLICATIONS_WITH_DB_ACCESS="tapes showtime"
+APPLICATIONS_WITH_DB_ACCESS="auth tapes showtime"
 APPLICATIONS_STOPPED="0"
 stop_applications() {
     APPLICATIONS_STOPPED="1"
