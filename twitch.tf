@@ -39,3 +39,10 @@ TWITCH_WEBHOOK_SECRET=${random_id.twitch_webhook_secret.hex}
 EOT
   sensitive = true
 }
+
+output "twitch_extension_client_env" {
+  value     = <<EOT
+TWITCH_EXTENSION_CLIENT_ID=${var.twitch_extension_client_id}
+EOT
+  sensitive = true
+}

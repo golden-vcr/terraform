@@ -25,6 +25,7 @@ terraform_output postgres_init_script > ./server-init/env/db-init.sh
 terraform_output twitch_api_env > ./server-init/env/auth.env
 terraform_output auth_db_env >> ./server-init/env/auth.env
 terraform_output sheets_api_env > ./server-init/env/tapes.env
+terraform_output twitch_extension_client_env >> ./server-init/env/tapes.env
 terraform_output images_s3_env >> ./server-init/env/tapes.env
 terraform_output tapes_db_env >> ./server-init/env/tapes.env
 terraform_output twitch_api_env > ./server-init/env/showtime.env
