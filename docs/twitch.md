@@ -33,6 +33,8 @@ We also need to manually manage a Twitch Extension. To create it initially:
    `secret.auto.tfvars` as `twitch_extension_client_id`.
 4. Choose the **Video (Full screen)** extension type, scroll down to the bottom of the
    page, and click **Create Extension Version**.
+5. Once the extension version has been created, in the **Asset Hosting** tab within its
+   settings page, change **Testing Base URI** to `https://localhost:5180/`.
 
 Note that creating event subscriptions via the EventSub API is outside the purview of
 the terraform repo. Once the backend is deployed and your Twitch credentials are
