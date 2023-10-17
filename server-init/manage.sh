@@ -39,10 +39,6 @@ run_up() {
         echo "Building $REPO_NAME-sync binary..."
         go build -o "bin/$REPO_NAME-sync" "cmd/sync/main.go"
     fi
-    if [ -f cmd/admin/main.go ]; then
-        echo "Building $REPO_NAME-admin binary..."
-        go build -o "bin/$REPO_NAME-admin" "cmd/admin/main.go"
-    fi
 
     go build -o "bin/$REPO_NAME" "cmd/server/main.go"
     cd bin
