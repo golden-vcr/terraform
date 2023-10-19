@@ -22,14 +22,20 @@ echo "Wrote to: ./server-init/ssl"
 echo -e "\n== Preparing .env files with config details from Terraform state..."
 mkdir -p ./server-init/env
 terraform_output postgres_init_script > ./server-init/env/db-init.sh
+# auth
 terraform_output twitch_api_env > ./server-init/env/auth.env
 terraform_output auth_db_env >> ./server-init/env/auth.env
+# tapes
 terraform_output sheets_api_env > ./server-init/env/tapes.env
 terraform_output twitch_extension_client_env >> ./server-init/env/tapes.env
 terraform_output images_s3_env >> ./server-init/env/tapes.env
 terraform_output tapes_db_env >> ./server-init/env/tapes.env
+# showtime
 terraform_output twitch_api_env > ./server-init/env/showtime.env
+terraform_output openai_api_env >> ./server-init/env/showtime.env
+terraform_output user_images_s3_env >> ./server-init/env/showtime.env
 terraform_output showtime_db_env >> ./server-init/env/showtime.env
+
 echo "Wrote to: ./server-init/env"
 
 echo -e "\n== Copying management scripts and SSL certificates to /gvcr..."
