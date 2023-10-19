@@ -35,6 +35,7 @@ respective documentation:
 - [Cloudflare](./docs/cloudflare.md)
 - [Google](./docs/google.md)
 - [Twitch](./docs/twitch.md)
+- [OpenAI](./docs/openai.md)
 - [PostgreSQL](./docs/postgres.md)
 
 ## Running terraform
