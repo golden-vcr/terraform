@@ -25,6 +25,9 @@ terraform_output postgres_init_script > ./server-init/env/db-init.sh
 # auth
 terraform_output twitch_api_env > ./server-init/env/auth.env
 terraform_output auth_db_env >> ./server-init/env/auth.env
+# ledger
+terraform_output twitch_api_env > ./server-init/env/ledger.env
+terraform_output ledger_db_env >> ./server-init/env/ledger.env
 # tapes
 terraform_output sheets_api_env > ./server-init/env/tapes.env
 terraform_output twitch_extension_client_env >> ./server-init/env/tapes.env
@@ -70,6 +73,10 @@ ssh -i $SSH_KEY "$SSH_DEST" "nginx -s reload"
 echo -e "\n== Running latest version of auth API..."
 scp -i $SSH_KEY ./server-init/env/auth.env "$SSH_DEST:/gvcr/auth.env"
 ssh -i $SSH_KEY "$SSH_DEST" "sh -c 'cd /gvcr && ./manage.sh auth update /gvcr/auth.env'"
+
+echo -e "\n== Running latest version of ledger API..."
+scp -i $SSH_KEY ./server-init/env/ledger.env "$SSH_DEST:/gvcr/ledger.env"
+ssh -i $SSH_KEY "$SSH_DEST" "sh -c 'cd /gvcr && ./manage.sh ledger update /gvcr/ledger.env'"
 
 echo -e "\n== Running latest version of tapes API..."
 scp -i $SSH_KEY ./server-init/env/tapes.env "$SSH_DEST:/gvcr/tapes.env"
