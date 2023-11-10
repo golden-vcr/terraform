@@ -31,7 +31,7 @@ resource "random_id" "twitch_webhook_secret" {
 
 output "twitch_api_env" {
   value     = <<EOT
-TWITCH_CHANNEL_NAME=${var.twitch_channel_name}_test
+TWITCH_CHANNEL_NAME=${var.twitch_channel_name}
 TWITCH_CLIENT_ID=${var.twitch_app_client_id}
 TWITCH_CLIENT_SECRET=${var.twitch_app_client_secret}
 TWITCH_EXTENSION_CLIENT_ID=${var.twitch_extension_client_id}
