@@ -30,7 +30,7 @@ terraform_output twitch_api_env > ./server-init/env/ledger.env
 terraform_output ledger_db_env >> ./server-init/env/ledger.env
 # tapes
 terraform_output sheets_api_env > ./server-init/env/tapes.env
-terraform_output twitch_extension_client_env >> ./server-init/env/tapes.env
+terraform_output twitch_api_env >> ./server-init/env/tapes.env
 terraform_output images_s3_env >> ./server-init/env/tapes.env
 terraform_output tapes_db_env >> ./server-init/env/tapes.env
 # showtime
