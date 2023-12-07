@@ -24,6 +24,8 @@ mkdir -p ./server-init/env
 terraform_output postgres_init_script > ./server-init/env/db-init.sh
 # auth
 terraform_output twitch_api_env > ./server-init/env/auth.env
+terraform_output auth_signing_keys_env >> ./server-init/env/auth.env
+terraform_output auth_shared_secret_env >> ./server-init/env/auth.env
 terraform_output auth_db_env >> ./server-init/env/auth.env
 # ledger
 terraform_output twitch_api_env > ./server-init/env/ledger.env
@@ -39,6 +41,7 @@ terraform_output twitch_api_env > ./server-init/env/showtime.env
 terraform_output openai_api_env >> ./server-init/env/showtime.env
 terraform_output user_images_s3_env >> ./server-init/env/showtime.env
 terraform_output showtime_db_env >> ./server-init/env/showtime.env
+terraform_output auth_shared_secret_env >> ./server-init/env/showtime.env
 terraform_output ledger_s2s_auth_env >> ./server-init/env/showtime.env
 
 echo "Wrote to: ./server-init/env"
