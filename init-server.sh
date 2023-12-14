@@ -39,6 +39,7 @@ terraform_output tapes_db_env >> ./server-init/env/tapes.env
 # showtime
 terraform_output twitch_api_env > ./server-init/env/showtime.env
 terraform_output openai_api_env >> ./server-init/env/showtime.env
+terraform_output discord_env >> ./server-init/env/showtime.env
 terraform_output user_images_s3_env >> ./server-init/env/showtime.env
 terraform_output showtime_db_env >> ./server-init/env/showtime.env
 terraform_output auth_shared_secret_env >> ./server-init/env/showtime.env
