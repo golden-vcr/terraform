@@ -44,6 +44,8 @@ terraform_output user_images_s3_env >> ./server-init/env/showtime.env
 terraform_output showtime_db_env >> ./server-init/env/showtime.env
 terraform_output auth_shared_secret_env >> ./server-init/env/showtime.env
 terraform_output ledger_s2s_auth_env >> ./server-init/env/showtime.env
+# hooks
+terraform_output twitch_api_env > ./server-init/env/hooks.env
 
 echo "Wrote to: ./server-init/env"
 
@@ -91,6 +93,10 @@ ssh -i $SSH_KEY "$SSH_DEST" "sh -c 'cd /gvcr && ./manage.sh tapes update /gvcr/t
 echo -e "\n== Running latest version of showtime API..."
 scp -i $SSH_KEY ./server-init/env/showtime.env "$SSH_DEST:/gvcr/showtime.env"
 ssh -i $SSH_KEY "$SSH_DEST" "sh -c 'cd /gvcr && ./manage.sh showtime update /gvcr/showtime.env'"
+
+echo -e "\n== Running latest version of hooks API..."
+scp -i $SSH_KEY ./server-init/env/hooks.env "$SSH_DEST:/gvcr/hooks.env"
+ssh -i $SSH_KEY "$SSH_DEST" "sh -c 'cd /gvcr && ./manage.sh hooks update /gvcr/hooks.env'"
 
 echo -e "\n== Preparing crontab file to configure scheduled jobs..."
 scp -i $SSH_KEY ./server-init/crontab "$SSH_DEST:/gvcr/crontab.tmp"
