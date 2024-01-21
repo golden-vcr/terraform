@@ -46,6 +46,7 @@ terraform_output auth_shared_secret_env >> ./server-init/env/showtime.env
 terraform_output ledger_s2s_auth_env >> ./server-init/env/showtime.env
 # hooks
 terraform_output twitch_api_env > ./server-init/env/hooks.env
+terraform_output hooks_rabbitmq_env >> ./server-init/env/hooks.env
 
 echo "Wrote to: ./server-init/env"
 
