@@ -47,6 +47,9 @@ terraform_output ledger_s2s_auth_env >> ./server-init/env/showtime.env
 # hooks
 terraform_output twitch_api_env > ./server-init/env/hooks.env
 terraform_output hooks_rabbitmq_env >> ./server-init/env/hooks.env
+# dispatch
+terraform_output dispatch_rabbitmq_env >> ./server-init/env/dispatch.env
+terraform_output auth_shared_secret_env >> ./server-init/env/dispatch.env
 
 echo "Wrote to: ./server-init/env"
 
@@ -79,25 +82,29 @@ echo -e "\n== Updating and reloading NGINX config..."
 scp -i $SSH_KEY ./server-init/goldenvcr.conf "$SSH_DEST:/etc/nginx/conf.d/goldenvcr.conf"
 ssh -i $SSH_KEY "$SSH_DEST" "nginx -s reload"
 
-echo -e "\n== Running latest version of auth API..."
+echo -e "\n== Running latest version of auth service..."
 scp -i $SSH_KEY ./server-init/env/auth.env "$SSH_DEST:/gvcr/auth.env"
 ssh -i $SSH_KEY "$SSH_DEST" "sh -c 'cd /gvcr && ./manage.sh auth update /gvcr/auth.env'"
 
-echo -e "\n== Running latest version of ledger API..."
+echo -e "\n== Running latest version of ledger service..."
 scp -i $SSH_KEY ./server-init/env/ledger.env "$SSH_DEST:/gvcr/ledger.env"
 ssh -i $SSH_KEY "$SSH_DEST" "sh -c 'cd /gvcr && ./manage.sh ledger update /gvcr/ledger.env'"
 
-echo -e "\n== Running latest version of tapes API..."
+echo -e "\n== Running latest version of tapes service..."
 scp -i $SSH_KEY ./server-init/env/tapes.env "$SSH_DEST:/gvcr/tapes.env"
 ssh -i $SSH_KEY "$SSH_DEST" "sh -c 'cd /gvcr && ./manage.sh tapes update /gvcr/tapes.env'"
 
-echo -e "\n== Running latest version of showtime API..."
+echo -e "\n== Running latest version of showtime service..."
 scp -i $SSH_KEY ./server-init/env/showtime.env "$SSH_DEST:/gvcr/showtime.env"
 ssh -i $SSH_KEY "$SSH_DEST" "sh -c 'cd /gvcr && ./manage.sh showtime update /gvcr/showtime.env'"
 
-echo -e "\n== Running latest version of hooks API..."
+echo -e "\n== Running latest version of hooks service..."
 scp -i $SSH_KEY ./server-init/env/hooks.env "$SSH_DEST:/gvcr/hooks.env"
 ssh -i $SSH_KEY "$SSH_DEST" "sh -c 'cd /gvcr && ./manage.sh hooks update /gvcr/hooks.env'"
+
+echo -e "\n== Running latest version of dispatch service..."
+scp -i $SSH_KEY ./server-init/env/dispatch.env "$SSH_DEST:/gvcr/dispatch.env"
+ssh -i $SSH_KEY "$SSH_DEST" "sh -c 'cd /gvcr && ./manage.sh dispatch update /gvcr/dispatch.env'"
 
 echo -e "\n== Preparing crontab file to configure scheduled jobs..."
 scp -i $SSH_KEY ./server-init/crontab "$SSH_DEST:/gvcr/crontab.tmp"

@@ -1,4 +1,11 @@
-resource "random_password" "rabbitmq_hooks_server_password" {
+resource "random_password" "rabbitmq_hooks_password" {
+  keepers = {
+    version  = 1
+  }
+  length = 32
+}
+
+resource "random_password" "rabbitmq_dispatch_password" {
   keepers = {
     version  = 1
   }
@@ -10,8 +17,19 @@ output "hooks_rabbitmq_env" {
 RMQ_HOST=${digitalocean_droplet.rabbitmq_server.ipv4_address_private}
 RMQ_PORT=5672
 RMQ_VHOST=gvcr
-RMQ_USER=hooks-server
-RMQ_PASSWORD='${random_password.rabbitmq_hooks_server_password.result}'
+RMQ_USER=hooks
+RMQ_PASSWORD='${random_password.rabbitmq_hooks_password.result}'
+EOT
+  sensitive = true
+}
+
+output "dispatch_rabbitmq_env" {
+  value     = <<EOT
+RMQ_HOST=${digitalocean_droplet.rabbitmq_server.ipv4_address_private}
+RMQ_PORT=5672
+RMQ_VHOST=gvcr
+RMQ_USER=dispatch
+RMQ_PASSWORD='${random_password.rabbitmq_dispatch_password.result}'
 EOT
   sensitive = true
 }
@@ -45,7 +63,6 @@ init_vhost() {
 init_user() {
     USER_NAME="$1"
     PASSWORD="$2"
-    EXCHANGE="$3"
     HAS_USER="0"
     for EXISTING_USER_NAME in $EXISTING_USER_NAMES; do
         if [ "$EXISTING_USER_NAME" == "$USER_NAME" ]; then
@@ -53,17 +70,18 @@ init_user() {
         fi
     done
     if [ "$HAS_USER" == "0" ]; then
-        echo "Creating new user '$USER_NAME' and granting all permissions on exchange '$EXCHANGE' in vhost '$VHOST_NAME'..."
+        echo "Creating new user '$USER_NAME'..."
         rabbitmqctl add_user "$USER_NAME" "$PASSWORD"
-        rabbitmqctl set_permissions -p "$VHOST_NAME" "$USER_NAME" "$EXCHANGE" '.*' '.*'
-        echo "User '$USER_NAME' created."
+        rabbitmqctl set_permissions -p "$VHOST_NAME" "$USER_NAME" '.*' '.*' '.*'
+        echo "User '$USER_NAME' created and initialized."
     else
         echo "User '$USER_NAME' already exists."
     fi
 }
 
 init_vhost "$VHOST_NAME"
-init_user 'hooks-server' '${random_password.rabbitmq_hooks_server_password.result}' 'twitch-events'
+init_user 'hooks' '${random_password.rabbitmq_hooks_password.result}'
+init_user 'dispatch' '${random_password.rabbitmq_dispatch_password.result}'
 echo "RabbitMQ server initialized."
 EOT
   sensitive = true
