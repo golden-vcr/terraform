@@ -40,17 +40,32 @@ run_up() {
         go build -o "bin/$REPO_NAME-sync" "cmd/sync/main.go"
     fi
 
-    go build -o "bin/$REPO_NAME" "cmd/server/main.go"
-    cd bin
-    mkdir -p /var/log/gvcr
-    "./$REPO_NAME" > "/var/log/gvcr/$REPO_NAME.log" 2>&1 &
-    PID=$!
-    echo "PID $PID"
+    if [ -f cmd/consumer/main.go ]; then
+        echo "Building $REPO_NAME-consumer binary..."
+        go build -o "bin/$REPO_NAME-consumer" "cmd/consumer/main.go"
+        cd bin
+        mkdir -p /var/log/gvcr
+        "./$REPO_NAME-consumer" > "/var/log/gvcr/$REPO_NAME-consumer.log" 2>&1 &
+        PID=$!
+        echo "PID $PID"
+        cd ..
+    fi
+
+    if [ -f cmd/server/main.go ]; then
+        echo "Building $REPO_NAME server binary..."
+        go build -o "bin/$REPO_NAME" "cmd/server/main.go"
+        cd bin
+        mkdir -p /var/log/gvcr
+        "./$REPO_NAME" > "/var/log/gvcr/$REPO_NAME.log" 2>&1 &
+        PID=$!
+        echo "PID $PID"
+        cd ..
+    fi
 }
 
 run_down() {
     set +e
-    PIDS=$(pgrep -x "$REPO_NAME")
+    PIDS=$(pgrep -x "$REPO_NAME-?.*")
     PGREP_EXITCODE=$?
     set -e
     if [ $PGREP_EXITCODE -eq 0 ]; then
