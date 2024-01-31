@@ -24,6 +24,23 @@ Terraform. To set up your Twitch developer credentials initially:
 5. Click **New Secret**, then copy the value and add it to `secret.auto.tfvars` as
    `twitch_app_client_secret`.
 
+We also need to register a separate application for our IRC chat bot:
+
+1. Log into the Twitch Developer console and navigate to
+   [Applications](https://dev.twitch.tv/console/apps).
+2. Click **Register Your Application**, and enter the following details:
+    - **Name:** Golden VCR Chat Bot
+    - **OAuth Redirect URLs:**
+      - `https://goldenvcr.com/api/chatbot/auth`
+      - `http://localhost:5006/auth`
+   - **Category:** Chat Bot
+   - **Client Type:** Confidential
+3. Click **Create**, then click **Manage** next to the new **Golden VCR Chat Bot** entry.
+4. Copy the **Client ID** value and add it to `secret.auto.tfvars` as
+   `twitch_bot_client_id`.
+5. Click **New Secret**, then copy the value and add it to `secret.auto.tfvars` as
+   `twitch_bot_client_secret`.
+
 We also need to manually manage a Twitch Extension. To create it initially:
 
 1. Browse to the [Extensions](https://dev.twitch.tv/console/extensions) page in the
