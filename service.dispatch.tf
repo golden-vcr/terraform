@@ -14,9 +14,8 @@ output "env_dispatch" {
 
 # To populate a dispatch/.env file for local development:
 #   terraform output -raw env_dispatch_local > ../dispatch/.env
-#   ./local-rmq.sh env >> ../dispatch/.env
 output "env_dispatch_local" {
-  value       = local.env_dispatch
+  value       = "${local.env_dispatch}${local.rmq_env_local}"
   description = ".env file contents for the dispatch service when running locally"
   sensitive   = true
 }

@@ -1,3 +1,7 @@
+data "external" "rabbitmq_local_env" {
+    program = ["bash", "${path.module}/local-rmq.sh", "env", "--json"]
+}
+
 resource "random_password" "rabbitmq_hooks_password" {
   keepers = {
     version  = 1
@@ -13,6 +17,13 @@ resource "random_password" "rabbitmq_dispatch_password" {
 }
 
 locals {
+    rmq_env_local = <<EOT
+RMQ_HOST=${data.external.rabbitmq_local_env.result["RMQ_HOST"]}
+RMQ_PORT=${data.external.rabbitmq_local_env.result["RMQ_PORT"]}
+RMQ_VHOST=${data.external.rabbitmq_local_env.result["RMQ_VHOST"]}
+RMQ_USER=${data.external.rabbitmq_local_env.result["RMQ_USER"]}
+RMQ_PASSWORD=${data.external.rabbitmq_local_env.result["RMQ_PASSWORD"]}
+EOT
     rmq_env_hooks = <<EOT
 RMQ_HOST=${digitalocean_droplet.rabbitmq_server.ipv4_address_private}
 RMQ_PORT=5672

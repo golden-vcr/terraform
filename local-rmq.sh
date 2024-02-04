@@ -8,11 +8,15 @@ PORT='5672'
 VHOST_NAME='gvcr'
 
 if [ "$1" == "env" ]; then
-    echo "RMQ_HOST=127.0.0.1"
-    echo "RMQ_PORT=$PORT"
-    echo "RMQ_VHOST=$VHOST_NAME"
-    echo "RMQ_USER=guest"
-    echo "RMQ_PASSWORD=guest"
+    if [ "$2" == "--json" ]; then
+        echo "{\"RMQ_HOST\":\"127.0.0.1\",\"RMQ_PORT\":\"$PORT\",\"RMQ_VHOST\":\"$VHOST_NAME\",\"RMQ_USER\":\"guest\",\"RMQ_PASSWORD\":\"guest\"}"
+    else
+        echo "RMQ_HOST=127.0.0.1"
+        echo "RMQ_PORT=$PORT"
+        echo "RMQ_VHOST=$VHOST_NAME"
+        echo "RMQ_USER=guest"
+        echo "RMQ_PASSWORD=guest"
+    fi
     exit
 fi
 

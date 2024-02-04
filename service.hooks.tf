@@ -26,9 +26,8 @@ output "env_hooks" {
 
 # To populate a hooks/.env file for local development:
 #   terraform output -raw env_hooks_local > ../hooks/.env
-#   ./local-rmq.sh env >> ../hooks/.env
 output "env_hooks_local" {
-  value       = local.env_hooks
+  value       = "${local.env_hooks}${local.rmq_env_local}"
   description = ".env file contents for the hooks service when running locally"
   sensitive   = true
 }
