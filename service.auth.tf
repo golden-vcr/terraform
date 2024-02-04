@@ -66,11 +66,3 @@ output "env_auth_local" {
   description = ".env file contents for the auth service when running locally"
   sensitive   = true
 }
-
-# Legacy: used by showtime
-output "auth_shared_secret_env" {
-  value     = <<EOT
-AUTH_SHARED_SECRET=${random_password.auth_shared_secret.result}
-EOT
-  sensitive = true
-}

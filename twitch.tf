@@ -42,21 +42,3 @@ resource "random_id" "twitch_webhook_secret" {
   }
   byte_length = 32
 }
-
-output "twitch_api_env" {
-  value     = <<EOT
-TWITCH_CHANNEL_NAME=${var.twitch_channel_name}
-TWITCH_CLIENT_ID=${var.twitch_app_client_id}
-TWITCH_CLIENT_SECRET=${var.twitch_app_client_secret}
-TWITCH_EXTENSION_CLIENT_ID=${var.twitch_extension_client_id}
-TWITCH_WEBHOOK_SECRET=${random_id.twitch_webhook_secret.hex}
-EOT
-  sensitive = true
-}
-
-output "twitch_extension_client_env" {
-  value     = <<EOT
-TWITCH_EXTENSION_CLIENT_ID=${var.twitch_extension_client_id}
-EOT
-  sensitive = true
-}

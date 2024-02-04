@@ -64,17 +64,13 @@ PGDATABASE=tapes
 PGUSER=tapes
 PGPASSWORD='${random_password.postgres_tapes_password.result}'
 EOT
-}
-
-output "showtime_db_env" {
-  value     = <<EOT
+  db_env_showtime = <<EOT
 PGHOST=127.0.0.1
 PGPORT=5432
 PGDATABASE=showtime
 PGUSER=showtime
 PGPASSWORD='${random_password.postgres_showtime_password.result}'
 EOT
-  sensitive = true
 }
 
 # Prepare a script that will initialize our self-managed Postgres server with the
