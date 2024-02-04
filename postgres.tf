@@ -1,3 +1,10 @@
+# Run './local-db.sh env --json' to capture the PG env vars used to connect to the
+# locally-running postgres container that's used for local development
+data "external" "postgres_local_env" {
+    program = ["bash", "${path.module}/local-db.sh", "env", "--json"]
+}
+
+# Generate passwords to use for each service's Postgres account in the live environment
 resource "random_password" "postgres_auth_password" {
   keepers = {
     version  = 1
@@ -26,15 +33,23 @@ resource "random_password" "postgres_showtime_password" {
   length = 32
 }
 
-output "auth_db_env" {
-  value     = <<EOT
+# Define .env blocks for use in "env_*" output variables
+locals {
+  db_env_local = <<EOT
+PGHOST=${data.external.postgres_local_env.result["PGHOST"]}
+PGPORT=${data.external.postgres_local_env.result["PGPORT"]}
+PGDATABASE=${data.external.postgres_local_env.result["PGDATABASE"]}
+PGUSER=${data.external.postgres_local_env.result["PGUSER"]}
+PGPASSWORD=${data.external.postgres_local_env.result["PGPASSWORD"]}
+PGSSLMODE=${data.external.postgres_local_env.result["PGSSLMODE"]}
+EOT
+  db_env_auth = <<EOT
 PGHOST=127.0.0.1
 PGPORT=5432
 PGDATABASE=auth
 PGUSER=auth
 PGPASSWORD='${random_password.postgres_auth_password.result}'
 EOT
-  sensitive = true
 }
 
 output "ledger_db_env" {
@@ -70,6 +85,8 @@ EOT
   sensitive = true
 }
 
+# Prepare a script that will initialize our self-managed Postgres server with the
+# required accounts etc.
 output "postgres_init_script" {
   value     = <<EOT
 #!/usr/bin/env bash

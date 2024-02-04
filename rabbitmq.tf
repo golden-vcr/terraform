@@ -1,7 +1,10 @@
+# Run './local-rmq.sh env --json' to capture the RMQ env vars used to connect to the
+# locally-running rabbitmq server container that's used for local development
 data "external" "rabbitmq_local_env" {
     program = ["bash", "${path.module}/local-rmq.sh", "env", "--json"]
 }
 
+# Generate passwords to use for each service's RabbitMQ account in the live environment
 resource "random_password" "rabbitmq_hooks_password" {
   keepers = {
     version  = 1
@@ -16,6 +19,7 @@ resource "random_password" "rabbitmq_dispatch_password" {
   length = 32
 }
 
+# Define .env blocks for use in "env_*" output variables
 locals {
     rmq_env_local = <<EOT
 RMQ_HOST=${data.external.rabbitmq_local_env.result["RMQ_HOST"]}

@@ -8,12 +8,16 @@ PASSWORD='password'
 PORT='5432'
 
 if [ "$1" == "env" ]; then
-    echo "PGHOST=127.0.0.1"
-    echo "PGPORT=$PORT"
-    echo "PGDATABASE=$USERNAME"
-    echo "PGUSER=$USERNAME"
-    echo "PGPASSWORD='$PASSWORD'"
-    echo "PGSSLMODE=disable"
+    if [ "$2" == "--json" ]; then
+        echo "{\"PGHOST\":\"127.0.0.1\",\"PGPORT\":\"$PORT\",\"PGDATABASE\":\"$USERNAME\",\"PGUSER\":\"$USERNAME\",\"PGPASSWORD\":\"$PASSWORD\",\"PGSSLMODE\":\"disable\"}"
+    else
+        echo "PGHOST=127.0.0.1"
+        echo "PGPORT=$PORT"
+        echo "PGDATABASE=$USERNAME"
+        echo "PGUSER=$USERNAME"
+        echo "PGPASSWORD='$PASSWORD'"
+        echo "PGSSLMODE=disable"
+    fi
     exit
 fi
 
