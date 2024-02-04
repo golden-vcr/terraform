@@ -27,10 +27,7 @@ terraform_output env_auth > ./server-init/env/auth.env
 # ledger
 terraform_output env_ledger > ./server-init/env/ledger.env
 # tapes
-terraform_output sheets_api_env > ./server-init/env/tapes.env
-terraform_output twitch_api_env >> ./server-init/env/tapes.env
-terraform_output images_s3_env >> ./server-init/env/tapes.env
-terraform_output tapes_db_env >> ./server-init/env/tapes.env
+terraform_output env_tapes > ./server-init/env/tapes.env
 # showtime
 terraform_output twitch_api_env > ./server-init/env/showtime.env
 terraform_output openai_api_env >> ./server-init/env/showtime.env

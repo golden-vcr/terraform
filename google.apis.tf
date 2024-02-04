@@ -30,11 +30,3 @@ variable "spreadsheet_id" {
   description = "ID of the Golden VCR Inventory spreadsheet in Google Sheets"
   default     = "1cR9Lbw9_VGQcEn8eGD2b5MwGRGzKugKZ9PVFkrqmA7k"
 }
-
-output "sheets_api_env" {
-  value     = <<EOT
-SHEETS_API_KEY=${google_apikeys_key.sheets.key_string}
-SPREADSHEET_ID=${var.spreadsheet_id}
-EOT
-  sensitive = true
-}

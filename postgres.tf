@@ -57,17 +57,13 @@ PGDATABASE=ledger
 PGUSER=ledger
 PGPASSWORD='${random_password.postgres_ledger_password.result}'
 EOT
-}
-
-output "tapes_db_env" {
-  value     = <<EOT
+  db_env_tapes = <<EOT
 PGHOST=127.0.0.1
 PGPORT=5432
 PGDATABASE=tapes
 PGUSER=tapes
 PGPASSWORD='${random_password.postgres_tapes_password.result}'
 EOT
-  sensitive = true
 }
 
 output "showtime_db_env" {
