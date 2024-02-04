@@ -1,7 +1,6 @@
-# There is no officially-supported Terraform provider for the Twitch API, so we manage
-# Twitch EventSub resources outside of Terraform, using an 'init' binary in the
-# showtime repo. However, to keep all our secrets in one place and unify our
-# configuration process, Twitch API credentials are still stored in Terraform state.
+# There is no officially-supported Terraform provider for the Twitch API, but to keep
+# all our secrets in one place and unify our configuration process, Twitch API
+# credentials are still stored in Terraform state.
 
 variable twitch_channel_name {
   description = "Name of the Twitch channel for which webhook subscriptions should be registered"
@@ -19,6 +18,21 @@ variable twitch_app_client_secret {
 
 variable twitch_extension_client_id {
   description = "Client ID vlaue for Twitch Extension, obtained from https://dev.twitch.tv/console/extensions; should be set in secret.auto.tfvars"
+}
+
+variable twitch_bot_username {
+  description = "Name of the Twitch account for our chat bot"
+  default     = "tapeboy"
+}
+
+variable twitch_bot_client_id {
+  description = "Client ID value for our chat bot's Twitch Application, obtained from https://dev.twitch.tv/console/apps; should be set in secret.auto.tfvars"
+  sensitive   = true
+}
+
+variable twitch_bot_client_secret {
+  description = "Client Secret value for our chat bot's Twitch Application, obtained from https://dev.twitch.tv/console/apps; should be set in secret.auto.tfvars"
+  sensitive   = true
 }
 
 resource "random_id" "twitch_webhook_secret" {
