@@ -1,8 +1,7 @@
 locals {
   # Common env vars used by this service in all environments
   env_dispatch = <<EOT
-TWITCH_CLIENT_ID=${var.twitch_app_client_id}
-TWITCH_CLIENT_SECRET=${var.twitch_app_client_secret}
+AUTH_SHARED_SECRET=${random_password.auth_shared_secret.result}
 EOT
 }
 

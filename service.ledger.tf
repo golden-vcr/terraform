@@ -1,7 +1,8 @@
 locals {
   # Common env vars used by this service in all environments
   env_ledger = <<EOT
-AUTH_SHARED_SECRET=${random_password.auth_shared_secret.result}
+TWITCH_CLIENT_ID=${var.twitch_app_client_id}
+TWITCH_CLIENT_SECRET=${var.twitch_app_client_secret}
 EOT
 }
 
