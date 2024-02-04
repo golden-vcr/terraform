@@ -12,26 +12,21 @@ resource "random_password" "rabbitmq_dispatch_password" {
   length = 32
 }
 
-output "hooks_rabbitmq_env" {
-  value     = <<EOT
+locals {
+    rmq_env_hooks = <<EOT
 RMQ_HOST=${digitalocean_droplet.rabbitmq_server.ipv4_address_private}
 RMQ_PORT=5672
 RMQ_VHOST=gvcr
 RMQ_USER=hooks
 RMQ_PASSWORD='${random_password.rabbitmq_hooks_password.result}'
 EOT
-  sensitive = true
-}
-
-output "dispatch_rabbitmq_env" {
-  value     = <<EOT
+    rmq_env_dispatch = <<EOT
 RMQ_HOST=${digitalocean_droplet.rabbitmq_server.ipv4_address_private}
 RMQ_PORT=5672
 RMQ_VHOST=gvcr
 RMQ_USER=dispatch
 RMQ_PASSWORD='${random_password.rabbitmq_dispatch_password.result}'
 EOT
-  sensitive = true
 }
 
 output "rabbitmq_init_script" {
