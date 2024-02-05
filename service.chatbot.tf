@@ -18,7 +18,7 @@ output "env_chatbot" {
 # To populate a chatbot/.env file for local development:
 #   terraform output -raw env_chatbot_local > ../chatbot/.env
 output "env_chatbot_local" {
-  value       = "${local.env_chatbot}${local.rmq_env_local}"
+  value       = "PUBLIC_URL=http://localhost:5006\n${local.env_chatbot}${local.rmq_env_local}"
   description = ".env file contents for the chatbot service when running locally"
   sensitive   = true
 }

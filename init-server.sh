@@ -27,6 +27,7 @@ terraform_output env_ledger > ./server-init/env/ledger.env
 terraform_output env_tapes > ./server-init/env/tapes.env
 terraform_output env_showtime > ./server-init/env/showtime.env
 terraform_output env_hooks > ./server-init/env/hooks.env
+terraform_output env_chatbot > ./server-init/env/chatbot.env
 terraform_output env_dispatch > ./server-init/env/dispatch.env
 echo "Wrote to: ./server-init/env"
 
@@ -78,6 +79,10 @@ ssh -i $SSH_KEY "$SSH_DEST" "sh -c 'cd /gvcr && ./manage.sh showtime update /gvc
 echo -e "\n== Running latest version of hooks service..."
 scp -i $SSH_KEY ./server-init/env/hooks.env "$SSH_DEST:/gvcr/hooks.env"
 ssh -i $SSH_KEY "$SSH_DEST" "sh -c 'cd /gvcr && ./manage.sh hooks update /gvcr/hooks.env'"
+
+echo -e "\n== Running latest version of chatbot service..."
+scp -i $SSH_KEY ./server-init/env/chatbot.env "$SSH_DEST:/gvcr/chatbot.env"
+ssh -i $SSH_KEY "$SSH_DEST" "sh -c 'cd /gvcr && ./manage.sh chatbot update /gvcr/chatbot.env'"
 
 echo -e "\n== Running latest version of dispatch service..."
 scp -i $SSH_KEY ./server-init/env/dispatch.env "$SSH_DEST:/gvcr/dispatch.env"
