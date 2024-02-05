@@ -12,6 +12,13 @@ resource "random_password" "rabbitmq_hooks_password" {
   length = 32
 }
 
+resource "random_password" "rabbitmq_chatbot_password" {
+  keepers = {
+    version  = 1
+  }
+  length = 32
+}
+
 resource "random_password" "rabbitmq_dispatch_password" {
   keepers = {
     version  = 1
@@ -35,6 +42,13 @@ RMQ_VHOST=gvcr
 RMQ_USER=hooks
 RMQ_PASSWORD='${random_password.rabbitmq_hooks_password.result}'
 EOT
+    rmq_env_chatbot = <<EOT
+RMQ_HOST=${digitalocean_droplet.rabbitmq_server.ipv4_address_private}
+RMQ_PORT=5672
+RMQ_VHOST=gvcr
+RMQ_USER=chatbot
+RMQ_PASSWORD='${random_password.rabbitmq_chatbot_password.result}'
+EOT
     rmq_env_dispatch = <<EOT
 RMQ_HOST=${digitalocean_droplet.rabbitmq_server.ipv4_address_private}
 RMQ_PORT=5672
@@ -44,6 +58,8 @@ RMQ_PASSWORD='${random_password.rabbitmq_dispatch_password.result}'
 EOT
 }
 
+# Prepare a script that will initialize our self-managed RabbitMQ server with the
+# required accounts etc.
 output "rabbitmq_init_script" {
   value     = <<EOT
 #!/usr/bin/env bash
@@ -91,6 +107,7 @@ init_user() {
 
 init_vhost "$VHOST_NAME"
 init_user 'hooks' '${random_password.rabbitmq_hooks_password.result}'
+init_user 'chatbot' '${random_password.rabbitmq_chatbot_password.result}'
 init_user 'dispatch' '${random_password.rabbitmq_dispatch_password.result}'
 echo "RabbitMQ server initialized."
 EOT
