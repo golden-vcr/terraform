@@ -5,6 +5,7 @@ TWITCH_CHANNEL_NAME=${var.twitch_channel_name}
 TWITCH_BOT_USERNAME=${var.twitch_bot_username}
 TWITCH_BOT_CLIENT_ID=${var.twitch_bot_client_id}
 TWITCH_BOT_CLIENT_SECRET=${var.twitch_bot_client_secret}
+AUTH_SHARED_SECRET=${random_password.auth_shared_secret.result}
 EOT
 }
 
