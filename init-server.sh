@@ -44,6 +44,10 @@ scp -i $SSH_KEY ./server-init/install-nginx.sh "$SSH_DEST:/gvcr/install-nginx.sh
 scp -i $SSH_KEY ./server-init/manage.sh "$SSH_DEST:/gvcr/manage.sh"
 ssh -i $SSH_KEY "$SSH_DEST" "sh -c 'chmod +x /gvcr/*.sh'"
 
+echo -e "\n== Copying temporary data migration scripts..."
+ssh -i $SSH_KEY "$SSH_DEST" "mkdir -p /gvcr/migrate"
+scp -i $SSH_KEY ./server-init/migrate/* "$SSH_DEST:/gvcr/migrate"
+
 echo -e "\n== Ensuring that volumes are mounted..."
 ssh -i $SSH_KEY "$SSH_DEST" "sh -c 'cd /gvcr && ./mount-volume.sh'"
 
