@@ -20,3 +20,13 @@ To set up a webhook that will allow us to automatically post ghost alerts in `#g
    channel.
 3. Click **Copy Webhook URL**, then paste that value in `secret.auto.tfvars` as
    `discord_ghosts_webhook_url`.
+
+We also need a webhook that will let us post notifications in `#watch`, for when the
+stream goes live etc.:
+
+1. Under **Server Settings**, browse to the **Integrations** section, then click
+   **Create Webhook**.
+2. Name the new webhook **Golden VCR Notifications**, and configure it to post in the
+   `#watch` channel.
+3. Click **Copy Webhook URL**, then paste that value in `secret.auto.tfvars` as
+   `discord_notifications_webhook_url`.
