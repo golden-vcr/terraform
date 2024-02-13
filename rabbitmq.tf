@@ -33,6 +33,13 @@ resource "random_password" "rabbitmq_broadcasts_password" {
   length = 32
 }
 
+resource "random_password" "rabbitmq_dynamo_password" {
+  keepers = {
+    version  = 1
+  }
+  length = 32
+}
+
 # Define .env blocks for use in "env_*" output variables
 locals {
     rmq_env_local = <<EOT
@@ -69,6 +76,13 @@ RMQ_PORT=5672
 RMQ_VHOST=gvcr
 RMQ_USER=broadcasts
 RMQ_PASSWORD='${random_password.rabbitmq_broadcasts_password.result}'
+EOT
+  rmq_env_dynamo = <<EOT
+RMQ_HOST=${digitalocean_droplet.rabbitmq_server.ipv4_address_private}
+RMQ_PORT=5672
+RMQ_VHOST=gvcr
+RMQ_USER=dynamo
+RMQ_PASSWORD='${random_password.rabbitmq_dynamo_password.result}'
 EOT
 }
 
@@ -124,6 +138,7 @@ init_user 'hooks' '${random_password.rabbitmq_hooks_password.result}'
 init_user 'chatbot' '${random_password.rabbitmq_chatbot_password.result}'
 init_user 'dispatch' '${random_password.rabbitmq_dispatch_password.result}'
 init_user 'broadcasts' '${random_password.rabbitmq_broadcasts_password.result}'
+init_user 'dynamo' '${random_password.rabbitmq_dynamo_password.result}'
 echo "RabbitMQ server initialized."
 EOT
   sensitive = true

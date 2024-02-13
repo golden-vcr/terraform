@@ -30,6 +30,7 @@ terraform_output env_hooks > ./server-init/env/hooks.env
 terraform_output env_chatbot > ./server-init/env/chatbot.env
 terraform_output env_dispatch > ./server-init/env/dispatch.env
 terraform_output env_broadcasts > ./server-init/env/broadcasts.env
+terraform_output env_dynamo > ./server-init/env/dynamo.env
 echo "Wrote to: ./server-init/env"
 
 echo -e "\n== Copying management scripts and SSL certificates to /gvcr..."
@@ -96,6 +97,10 @@ ssh -i $SSH_KEY "$SSH_DEST" "sh -c 'cd /gvcr && ./manage.sh dispatch update /gvc
 echo -e "\n== Running latest version of broadcasts service..."
 scp -i $SSH_KEY ./server-init/env/broadcasts.env "$SSH_DEST:/gvcr/broadcasts.env"
 ssh -i $SSH_KEY "$SSH_DEST" "sh -c 'cd /gvcr && ./manage.sh broadcasts update /gvcr/broadcasts.env'"
+
+echo -e "\n== Running latest version of dynamo service..."
+scp -i $SSH_KEY ./server-init/env/dynamo.env "$SSH_DEST:/gvcr/dynamo.env"
+ssh -i $SSH_KEY "$SSH_DEST" "sh -c 'cd /gvcr && ./manage.sh dynamo update /gvcr/dynamo.env'"
 
 echo -e "\n== Preparing crontab file to configure scheduled jobs..."
 scp -i $SSH_KEY ./server-init/crontab "$SSH_DEST:/gvcr/crontab.tmp"
