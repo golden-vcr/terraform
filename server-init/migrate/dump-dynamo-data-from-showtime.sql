@@ -11,7 +11,7 @@ SELECT
       else 'NULL'
     end,
     '''ghost''',
-    format('''{"subject":"%s"}''::jsonb', replace(subject_noun_clause, '''', '''''')),
+    format('''{"subject":"%s"}''::jsonb', replace(replace(subject_noun_clause, '''', ''''''), '"', '\"')),
     format('''%s''', replace(prompt, '''', '''''')),
     format('''%s''::timestamptz', created_at),
     case when finished_at is not null
