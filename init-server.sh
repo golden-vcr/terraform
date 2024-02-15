@@ -32,6 +32,7 @@ terraform_output env_dispatch > ./server-init/env/dispatch.env
 terraform_output env_broadcasts > ./server-init/env/broadcasts.env
 terraform_output env_dynamo > ./server-init/env/dynamo.env
 terraform_output env_alerts > ./server-init/env/alerts.env
+terraform_output env_remix > ./server-init/env/remix.env
 echo "Wrote to: ./server-init/env"
 
 echo -e "\n== Copying management scripts and SSL certificates to /gvcr..."
@@ -106,6 +107,10 @@ ssh -i $SSH_KEY "$SSH_DEST" "sh -c 'cd /gvcr && ./manage.sh dynamo update /gvcr/
 echo -e "\n== Running latest version of alerts service..."
 scp -i $SSH_KEY ./server-init/env/alerts.env "$SSH_DEST:/gvcr/alerts.env"
 ssh -i $SSH_KEY "$SSH_DEST" "sh -c 'cd /gvcr && ./manage.sh alerts update /gvcr/alerts.env'"
+
+echo -e "\n== Running latest version of remix service..."
+scp -i $SSH_KEY ./server-init/env/remix.env "$SSH_DEST:/gvcr/remix.env"
+ssh -i $SSH_KEY "$SSH_DEST" "sh -c 'cd /gvcr && ./manage.sh remix update /gvcr/remix.env'"
 
 echo -e "\n== Preparing crontab file to configure scheduled jobs..."
 scp -i $SSH_KEY ./server-init/crontab "$SSH_DEST:/gvcr/crontab.tmp"
