@@ -47,6 +47,13 @@ resource "random_password" "postgres_dynamo_password" {
   length = 32
 }
 
+resource "random_password" "postgres_remix_password" {
+  keepers = {
+    version  = 1
+  }
+  length = 32
+}
+
 # Define .env blocks for use in "env_*" output variables
 locals {
   db_env_local = <<EOT
@@ -99,6 +106,13 @@ PGDATABASE=dynamo
 PGUSER=dynamo
 PGPASSWORD='${random_password.postgres_dynamo_password.result}'
 EOT
+  db_env_remix = <<EOT
+PGHOST=127.0.0.1
+PGPORT=5432
+PGDATABASE=remix
+PGUSER=remix
+PGPASSWORD='${random_password.postgres_remix_password.result}'
+EOT
 }
 
 # Prepare a script that will initialize our self-managed Postgres server with the
@@ -136,6 +150,7 @@ init_db 'tapes' '${random_password.postgres_tapes_password.result}'
 init_db 'showtime' '${random_password.postgres_showtime_password.result}'
 init_db 'broadcasts' '${random_password.postgres_broadcasts_password.result}'
 init_db 'dynamo' '${random_password.postgres_dynamo_password.result}'
+init_db 'remix' '${random_password.postgres_remix_password.result}'
 echo "Database initialized."
 EOT
   sensitive = true
