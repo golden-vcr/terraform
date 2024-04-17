@@ -4,6 +4,7 @@ locals {
 AUTH_SHARED_SECRET=${random_password.auth_shared_secret.result}
 OPENAI_API_KEY=${var.openai_api_key}
 DISCORD_GHOSTS_WEBHOOK_URL=${var.discord_ghosts_webhook_url}
+DISCORD_FRIENDS_WEBHOOK_URL=${var.discord_friends_webhook_url}
 SPACES_BUCKET_NAME=${digitalocean_spaces_bucket.user_images.name}
 SPACES_REGION_NAME=${digitalocean_spaces_bucket.user_images.region}
 SPACES_ENDPOINT_URL=${digitalocean_spaces_bucket.user_images.endpoint}

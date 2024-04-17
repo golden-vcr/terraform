@@ -21,6 +21,9 @@ To set up a webhook that will allow us to automatically post ghost alerts in `#g
 3. Click **Copy Webhook URL**, then paste that value in `secret.auto.tfvars` as
    `discord_ghosts_webhook_url`.
 
+Repeat the same steps to create a Webhook for posting friend images, then paste the
+resulting URL into `secret.auto.tfvars` as `discord_friends_webhook_url`.
+
 We also need a webhook that will let us post notifications in `#watch`, for when the
 stream goes live etc.:
 
