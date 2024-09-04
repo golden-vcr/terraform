@@ -17,10 +17,11 @@ resource "tls_cert_request" "goldenvcr" {
 # (i.e. the DigitalOcean droplet) and is used to encrypt traffic between CloudFlare and
 # our server.
 resource "cloudflare_origin_ca_certificate" "goldenvcr" {
-  csr                = tls_cert_request.goldenvcr.cert_request_pem
-  hostnames          = ["goldenvcr.com"]
-  request_type       = "origin-rsa"
-  requested_validity = 365
+  csr                  = tls_cert_request.goldenvcr.cert_request_pem
+  hostnames            = ["goldenvcr.com"]
+  request_type         = "origin-rsa"
+  requested_validity   = 365
+  min_days_for_renewal = 7
 }
 
 # Expose origin cert and key as outputs so we can install them on our nginx server
